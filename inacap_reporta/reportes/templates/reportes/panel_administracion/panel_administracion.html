@@ -54,8 +54,14 @@
             border: 1px solid #dc3545;
             transition: all 0.3s ease;
         }
-        .user-info a::before { content: "🚪 "; margin-right: 5px; }
-        .user-info a:hover { background: #dc3545; color: white; }
+        .user-info a.profile-link {
+            color: #667eea;
+            border-color: #667eea;
+        }
+        .user-info a.profile-link::before { content: "👤 "; margin-right: 5px; }
+        .user-info a.profile-link:hover { background: #667eea; color: white; }
+        .user-info a.logout-link::before { content: "🚪 "; margin-right: 5px; }
+        .user-info a.logout-link:hover { background: #dc3545; color: white; }
         .stats-panel {
             display: grid;
             grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
@@ -215,7 +221,8 @@
             <h1>INACAP Reporta - Administración</h1>
             <div class="user-info">
                 <strong>Administrador:</strong> {{ user.first_name|default:user.username }}
-                <a href="{% url 'logout' %}">Cerrar Sesión</a>
+                <a href="{% url 'perfil' %}" class="profile-link">Mi Perfil</a>
+                <a href="{% url 'logout' %}" class="logout-link">Cerrar Sesión</a>
             </div>
         </div>
         <div class="stats-panel">

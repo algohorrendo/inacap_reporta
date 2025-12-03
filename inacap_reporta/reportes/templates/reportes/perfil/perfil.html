@@ -43,7 +43,11 @@
 
     <!-- Botón Volver -->
     <div class="perfil-back">
-        <a href="{% url 'panel_usuario' %}" class="btn btn-secondary">← Volver al panel</a>
+        {% if user.is_staff or user.is_superuser %}
+            <a href="{% url 'panel_administracion' %}" class="btn btn-secondary">← Volver al panel de administración</a>
+        {% else %}
+            <a href="{% url 'panel_usuario' %}" class="btn btn-secondary">← Volver al panel</a>
+        {% endif %}
     </div>
 
     <!-- Contenido Principal -->
@@ -155,7 +159,9 @@
                 {% else %}
                     <div class="empty-state">
                         <p>📭 No tienes ningún reporte aún</p>
-                        <a href="{% url 'crear_reporte' %}" class="btn btn-primary">Crear reporte</a>
+                        {% if not user.is_staff and not user.is_superuser %}
+                            <a href="{% url 'crear_reporte' %}" class="btn btn-primary">Crear reporte</a>
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
