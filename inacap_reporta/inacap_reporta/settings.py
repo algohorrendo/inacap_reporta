@@ -25,12 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-6cp%_grp)&e*5rvkv_j^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# ALLOWED_HOSTS - mejor manejo para Render
-ALLOWED_HOSTS_STR = os.environ.get('ALLOWED_HOSTS', '*')
-if ALLOWED_HOSTS_STR == '*':
-    ALLOWED_HOSTS = ['*']
-else:
-    ALLOWED_HOSTS = [h.strip() for h in ALLOWED_HOSTS_STR.split(',') if h.strip()]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
 
@@ -58,22 +53,6 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000').split(',')
-
-# CSRF Configuration for production
-CSRF_TRUSTED_ORIGINS = os.environ.get(
-    'CSRF_TRUSTED_ORIGINS',
-    'https://inacap-reporta.onrender.com,http://localhost:8000'
-).split(',')
-
-# Security settings for production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = False  # Render maneja SSL
-    # Desactivar cookies seguras temporalmente para evitar errores 400
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-    SECURE_BROWSER_XSS_FILTER = True
-    SECURE_CONTENT_TYPE_NOSNIFF = True
-    X_FRAME_OPTIONS = 'DENY'
 
 CORS_ALLOW_METHODS = [
     'DELETE',
