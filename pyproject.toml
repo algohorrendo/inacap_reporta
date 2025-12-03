@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inacap-reporta"
+version = "1.0.0"
+description = "Sistema de reportes INACAP"
+requires-python = ">=3.11"
+
