@@ -12,10 +12,6 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
-import pymysql
-
-# PyMySQL configuration for Django
-pymysql.install_as_MySQLdb()
 
 # Load environment variables from .env file
 load_dotenv()
@@ -100,8 +96,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'inacap_reporta.wsgi.application'
 
 # Database
-# Try to use DATABASE_URL from environment (Railway, Heroku, etc.)
+# PyMySQL must be loaded BEFORE Django tries to connect to MySQL
+# Check if we'll be using MySQL before configuring database
+USE_MYSQL = False
 DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Check if DATABASE_URL contains mysql
+    if 'mysql' in DATABASE_URL.lower():
+        USE_MYSQL = True
+else:
+    # Check DB_ENGINE setting
+    DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.mysql')
+    if 'mysql' in DB_ENGINE.lower():
+        USE_MYSQL = True
+
+# Load PyMySQL only if MySQL will be used
+if USE_MYSQL:
+    try:
+        import pymysql
+        pymysql.install_as_MySQLdb()
+    except ImportError:
+        pass  # PyMySQL not available, will use mysqlclient if available
+
+# Configure database
 if DATABASE_URL:
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)

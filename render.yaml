@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: inacap-reporta
+    runtime: python
+    buildCommand: cd inacap_reporta && pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: cd inacap_reporta && gunicorn inacap_reporta.wsgi
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
