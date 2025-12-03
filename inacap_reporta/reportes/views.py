@@ -179,7 +179,7 @@ def panel_administracion_view(request):
 @login_required
 def reporte_incidencia_view(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('panel_administración')
+        return redirect('panel_administracion')
 
     if request.method == 'POST':
         titulo = request.POST.get('titulo')

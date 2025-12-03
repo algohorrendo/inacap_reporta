@@ -96,40 +96,38 @@ TEMPLATES = [
 WSGI_APPLICATION = 'inacap_reporta.wsgi.application'
 
 # Database
-# PyMySQL must be loaded BEFORE Django tries to connect to MySQL
-# Check if we'll be using MySQL before configuring database
-USE_MYSQL = False
+# PyMySQL is loaded in __init__.py before Django initializes
+# Configure database
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Check if DATABASE_URL contains mysql
-    if 'mysql' in DATABASE_URL.lower():
-        USE_MYSQL = True
+    # Check if DATABASE_URL is for MySQL
+    if 'mysql' in DATABASE_URL.lower() or 'mariadb' in DATABASE_URL.lower():
+        # Parse MySQL URL manually or use dj_database_url
+        # dj_database_url should handle mysql:// URLs, but we ensure proper engine
+        db_config = dj_database_url.parse(DATABASE_URL)
+        # Ensure MySQL engine is set
+        if 'mysql' in DATABASE_URL.lower() or 'mariadb' in DATABASE_URL.lower():
+            db_config['ENGINE'] = 'django.db.backends.mysql'
+            # Add MySQL-specific options
+            db_config.setdefault('OPTIONS', {})
+            db_config['OPTIONS'].update({
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'charset': 'utf8mb4',
+            })
+        DATABASES = {
+            'default': db_config
+        }
+    else:
+        # For other database types (PostgreSQL, etc.)
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL)
+        }
 else:
-    # Check DB_ENGINE setting
-    DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.mysql')
-    if 'mysql' in DB_ENGINE.lower():
-        USE_MYSQL = True
-
-# Load PyMySQL only if MySQL will be used
-if USE_MYSQL:
-    try:
-        import pymysql
-        pymysql.install_as_MySQLdb()
-    except ImportError:
-        pass  # PyMySQL not available, will use mysqlclient if available
-
-# Configure database
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
-    }
-else:
-    # Fallback to local MySQL or PostgreSQL configuration
-    DB_ENGINE = os.environ.get('DB_ENGINE', 'django.db.backends.mysql')
+    # Fallback to local MySQL configuration
     DATABASES = {
         'default': {
-            'ENGINE': DB_ENGINE,
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': os.environ.get('DB_NAME', 'inacap_reporta'),
             'USER': os.environ.get('DB_USER', 'root'),
             'PASSWORD': os.environ.get('DB_PASSWORD', 'admin'),
@@ -138,7 +136,7 @@ else:
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
                 'charset': 'utf8mb4',
-            } if DB_ENGINE == 'django.db.backends.mysql' else {},
+            },
         }
     }
 

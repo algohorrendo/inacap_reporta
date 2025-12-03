@@ -16,3 +16,4 @@ python manage.py create_superuser_if_not_exists
 echo ✅ Release completado exitosamente!
 
 
+
