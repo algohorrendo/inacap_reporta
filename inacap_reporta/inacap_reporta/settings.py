@@ -27,6 +27,12 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
+# CSRF Trusted Origins - necesario para formularios desde Railway
+CSRF_TRUSTED_ORIGINS = os.environ.get(
+    'CSRF_TRUSTED_ORIGINS',
+    'https://inacapreporta-production.up.railway.app,http://localhost:8000,http://127.0.0.1:8000'
+).split(',')
+
 # Application definition
 
 
