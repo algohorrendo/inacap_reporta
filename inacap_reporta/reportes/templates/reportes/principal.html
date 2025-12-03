@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>INACAP Reporta - Principal</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'reportes/principal/style.css' %}">
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <h1>INACAP Reporta</h1>
+            <p>Sistema universitario para reportes y gestión de incidencias</p>
+        </header>
+        <nav class="nav-grid">
+            <a href="{% url 'login' %}" class="nav-item login">
+                <i class="fas fa-sign-in-alt"></i>
+                Iniciar Sesión
+            </a>
+            <a href="{% url 'registro' %}" class="nav-item registro">
+                <i class="fas fa-user-plus"></i>
+                Registro de Usuario
+            </a>
+            <a href="{% url 'panel_usuario' %}" class="nav-item usuario">
+                <i class="fas fa-user-circle"></i>
+                Panel Usuario
+            </a>
+            <a href="{% url 'panel_administracion' %}" class="nav-item admin">
+                <i class="fas fa-tools"></i>
+                Panel Administración
+            </a>
+            <a href="{% url 'reporte_incidencia' %}" class="nav-item incidencia">
+                <i class="fas fa-exclamation-triangle"></i>
+                Reportar Incidencia
+            </a>
+            <a href="{% url 'detalle_incidencias' 1 %}" class="nav-item detalle">
+                <i class="fas fa-search"></i>
+                Detalle Incidencias
+            </a>
+        </nav>
+        <footer>
+            <small>&copy; 2025 INACAP Reporta</small>
+        </footer>
+    </div>
+    <!-- Puedes agregar Font Awesome desde CDN para iconos bonitos -->
+    <script src="https://kit.fontawesome.com/bf94e97e6d.js" crossorigin="anonymous"></script>
+</body>
+</html>

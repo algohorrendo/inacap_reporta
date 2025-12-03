@@ -1,0 +1,49 @@
+{% extends 'reportes/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Dashboard API</h2>
+    <div id="incidencias-list" class="row"></div>
+</div>
+
+<script>
+async function fetchIncidencias() {
+    try {
+        const response = await fetch('/api/incidencias/');
+        if (!response.ok) {
+            throw new Error('Error al obtener datos');
+        }
+        const data = await response.json();
+        const container = document.getElementById('incidencias-list');
+        
+        if (data.results) {  // Si hay paginación
+            data.results.forEach(renderIncidencia);
+        } else {  // Si no hay paginación
+            data.forEach(renderIncidencia);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function renderIncidencia(incidencia) {
+    const container = document.getElementById('incidencias-list');
+    const card = document.createElement('div');
+    card.className = 'col-md-4 mb-3';
+    card.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">${incidencia.titulo}</h5>
+                <p class="card-text">${incidencia.descripcion}</p>
+                <p><strong>Estado:</strong> ${incidencia.estado}</p>
+                <p><strong>Urgencia:</strong> ${incidencia.urgencia}</p>
+                ${incidencia.foto ? `<img src="${incidencia.foto}" class="img-fluid mb-2" alt="Foto incidencia">` : ''}
+            </div>
+        </div>
+    `;
+    container.appendChild(card);
+}
+
+document.addEventListener('DOMContentLoaded', fetchIncidencias);
+</script>
+{% endblock %}

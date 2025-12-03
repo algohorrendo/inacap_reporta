@@ -1,0 +1,2 @@
+web: gunicorn inacap_reporta.wsgi --log-file -
+

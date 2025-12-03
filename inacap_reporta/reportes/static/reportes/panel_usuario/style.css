@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.panel-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.header h1 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.user-info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.user-info a {
+    color: #dc3545;
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.user-info a:hover {
+    text-decoration: underline;
+}
+
+.actions-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.actions-panel h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+}
+
+.incidencias-panel {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.incidencias-panel h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    color: #333;
+}
+
+.no-incidencias {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px;
+}
+
+.no-incidencias p {
+    margin-bottom: 15px;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.btn-small:hover {
+    background: #218838;
+}

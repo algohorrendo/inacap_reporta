@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INACAP Reporta - Panel Usuario</title>
+    {% load static %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'reportes/panel_usuario/style.css' %}">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --danger-color: #FF5722;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 22px;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            text-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+
+        .user-menu-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.5);
+            margin-left: 15px;
+            text-decoration: none;
+        }
+
+        .user-menu-avatar:hover {
+            background: rgba(255,255,255,0.5);
+            border-color: white;
+            text-decoration: none;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .dropdown-header {
+            padding: 12px 20px;
+            color: var(--primary-color);
+            font-weight: bold;
+            background: #f8f9fa;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+            transition: all 0.2s ease;
+            color: #333;
+        }
+
+        .dropdown-item:hover {
+            background: #f0f0f0;
+            color: var(--primary-color);
+            border-left: 3px solid var(--primary-color);
+            padding-left: 17px;
+        }
+
+        .dropdown-item.logout-link {
+            color: var(--danger-color);
+        }
+
+        .dropdown-item.logout-link:hover {
+            background: #ffe0e0;
+            color: var(--danger-color);
+        }
+
+        footer {
+            background: rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 18px;
+            }
+
+            .user-menu-avatar {
+                margin-left: 10px;
+            }
+        }
+
+        /* Badges de estado y urgencia */
+        .badge-estado,
+        .badge-urgencia {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* Estados */
+        .estado-pendiente { background: #ff9800; }
+        .estado-progreso  { background: #2196f3; }
+        .estado-resuelto  { background: #4caf50; }
+        .estado-cerrado   { background: #9c27b0; }
+
+        /* Urgencias */
+        .urgencia-baja  { background: #4caf50; }
+        .urgencia-media { background: #ffc107; color: #333; }
+        .urgencia-alta  { background: #f44336; }
+        .urgencia-critica {
+            background: #dc3545;
+            color: white;
+            border: 2px solid #8b0000;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+            }
+            50% {
+                opacity: 0.9;
+                box-shadow: 0 0 20px rgba(220, 53, 69, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="/">📋 Inacap Reporta</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">🏠 Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reporte_incidencia/">🆕 Nuevo Reporte</a>
+                    </li>
+
+                    <!-- Avatar Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="user-menu-avatar dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            {{ user.first_name|first|default:'U' }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <h6 class="dropdown-header">
+                                    👤 {{ user.get_full_name|default:user.username }}
+                                </h6>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/perfil/">👤 Mi Perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item logout-link" href="{% url 'logout' %}">🚪 Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="panel-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>INACAP Reporta</h1>
+            <div class="user-info">
+                <strong>Bienvenido:</strong> {{ user.get_full_name|default:user.username }}
+            </div>
+        </div>
+
+        <!-- Panel de Acciones -->
+        <div class="actions-panel">
+            <h2>Acciones Disponibles</h2>
+            <a href="{% url 'reporte_incidencia' %}" class="btn">
+                ➕ Nueva Incidencia
+            </a>
+            <button type="button" class="btn btn-secondary" onclick="location.reload()">
+                🔄 Actualizar Lista
+            </button>
+        </div>
+
+        <!-- Panel de Incidencias -->
+        <div class="incidencias-panel">
+            <h2>Mis Incidencias Reportadas</h2>
+
+            {% if incidencias %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Categoría</th>
+                            <th>Urgencia</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for incidencia in incidencias %}
+                        <tr>
+                            <td>#{{ incidencia.id_incidencia }}</td>
+                            <td>{{ incidencia.titulo }}</td>
+                            <td>{{ incidencia.categoria_texto|default:incidencia.id_categoria.nombre|title }}</td>
+                            <td>
+                                <span class="badge-urgencia urgencia-{{ incidencia.urgencia|default:'media' }}">
+                                    {{ incidencia.urgencia|title }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge-estado estado-{{ incidencia.estado|default:'pendiente' }}">
+                                    {{ incidencia.get_estado_display|default:incidencia.estado|title }}
+                                </span>
+                            </td>
+                            <td>{{ incidencia.fecha_reporte|date:"d/m/Y H:i" }}</td>
+                            <td>
+                                <a href="{% url 'detalle_incidencias' incidencia.id_incidencia %}"
+                                   style="background: linear-gradient(45deg, #667eea, #764ba2);
+                                          color: white; padding: 8px 15px;
+                                          text-decoration: none; border-radius: 5px;
+                                          font-size: 12px; font-weight: bold;
+                                          margin-right: 5px;">
+                                    👁️ Ver
+                                </a>
+                                <a href="{% url 'editar_incidencia_usuario' incidencia.id_incidencia %}"
+                                   style="background: #28a745; color: white;
+                                          padding: 8px 15px; text-decoration: none;
+                                          border-radius: 5px; font-size: 12px;
+                                          font-weight: bold; margin-right: 5px;">
+                                    ✏️ Editar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="no-incidencias">
+                    <p>No tienes incidencias reportadas.</p>
+                    <p>
+                        <a href="{% url 'reporte_incidencia' %}" class="btn">
+                            Crear tu primera incidencia
+                        </a>
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Inacap Reporta - Sistema de Reporte de Incidencias</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'reportes/panel_usuario/script.js' %}"></script>
+</body>
+</html>

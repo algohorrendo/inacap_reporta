@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>INACAP Reporta - Editar Incidencia</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .detalle-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .header h1 { color:#333; margin-bottom:10px; }
+        .user-info {
+            background: #f8f9fa;
+            padding:15px;
+            border-radius:5px;
+        }
+        .user-info a {
+            color: #dc3545; text-decoration:none; margin-left:20px; font-weight:bold;
+        }
+        .user-info a:hover { text-decoration:underline; }
+        .incidencia-detail {
+            background: white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 8px 25px rgba(0,0,0,0.15);
+        }
+        .incidencia-detail h2 {
+            color:#333; margin-bottom:25px; text-align:center;
+            padding-bottom:15px; border-bottom:3px solid #667eea;
+        }
+        .edit-form label {
+            display:block; margin-top:15px; font-weight:bold; color:#333;
+        }
+        .edit-form input[type="text"],
+        .edit-form textarea,
+        .edit-form select,
+        .edit-form input[type="file"] {
+            width:100%; padding:10px; margin-top:5px;
+            border:1px solid #ccc; border-radius:5px;
+            font-size:14px;
+        }
+        .edit-form textarea { min-height:100px; resize:vertical; }
+        .form-buttons {
+            margin-top:25px; text-align:center; border-top:1px solid #dee2e6; padding-top:20px;
+        }
+        .btn, .btn-secondary {
+            display:inline-block; padding:12px 25px;
+            text-decoration:none; border-radius:5px; font-weight:bold;
+            transition:all 0.3s ease; margin:5px;
+        }
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color:white; border:none;
+        }
+        .btn:hover {
+            transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-secondary {
+            background:#6c757d; color:white; border:1px solid #6c757d;
+        }
+        .btn-secondary:hover {
+            background:#545b62; transform:translateY(-2px);
+            box-shadow:0 4px 12px rgba(0,0,0,0.15);
+        }
+        @media(max-width:768px) {
+            .incidencia-detail { padding:20px; }
+            .btn, .btn-secondary { width:100%; margin:10px 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="detalle-container">
+        <div class="header">
+            <h1>🏢 INACAP Reporta</h1>
+            <div class="user-info">
+                <strong>👤 Usuario:</strong> {{ user.first_name|default:user.username }}
+                <a href="{% url 'logout' %}">🚪 Cerrar Sesión</a>
+            </div>
+        </div>
+
+        <div class="incidencia-detail">
+            <h2>✏️ Editar Incidencia #{{ incidencia.id_incidencia }}</h2>
+            <form method="post" enctype="multipart/form-data" class="edit-form">
+                {% csrf_token %}
+                <label for="titulo">Título</label>
+                <input id="titulo" type="text" name="titulo" value="{{ incidencia.titulo }}" required>
+
+                <label for="categoria">Categoría</label>
+                <input id="categoria" type="text" name="categoria" value="{{ incidencia.categoria_texto }}" required>
+
+                <label for="descripcion">Descripción</label>
+                <textarea id="descripcion" name="descripcion" required>{{ incidencia.descripcion }}</textarea>
+
+                <label for="ubicacion">Ubicación</label>
+                <input id="ubicacion" type="text" name="ubicacion" value="{{ incidencia.ubicacion_texto }}" required>
+
+                <label for="urgencia">Urgencia</label>
+                <select id="urgencia" name="urgencia">
+                    <option value="baja"    {% if incidencia.urgencia == "baja"    %}selected{% endif %}>Baja</option>
+                    <option value="media"   {% if incidencia.urgencia == "media"   %}selected{% endif %}>Media</option>
+                    <option value="alta"    {% if incidencia.urgencia == "alta"    %}selected{% endif %}>Alta</option>
+                <option value="critica" {% if incidencia.urgencia == "critica" %}selected{% endif %}>Crítica</option>
+
+                </select>
+
+                <label for="foto">Foto nueva (opcional)</label>
+                <input id="foto" type="file" name="foto">
+
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Guardar Cambios</button>
+                    <a href="{% url 'panel_usuario' %}" class="btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
