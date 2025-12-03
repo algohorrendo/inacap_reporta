@@ -68,3 +68,4 @@ cd inacap_reporta && python manage.py migrate --noinput && python manage.py crea
 3. Configurar el Release Command correctamente
 4. Hacer un nuevo deploy
 
+

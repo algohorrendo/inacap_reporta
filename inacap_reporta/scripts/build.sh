@@ -16,3 +16,4 @@ python manage.py collectstatic --noinput
 
 echo "✅ Build completado exitosamente!"
 
+

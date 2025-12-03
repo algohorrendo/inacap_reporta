@@ -7,4 +7,4 @@ services:
     startCommand: cd inacap_reporta && bash scripts/start.sh
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.13

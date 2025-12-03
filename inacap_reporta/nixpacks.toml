@@ -17,3 +17,4 @@ cmd = "gunicorn inacap_reporta.wsgi --log-file -"
 [deploy]
 releaseCommand = "python manage.py migrate --noinput && python manage.py create_superuser_if_not_exists"
 
+

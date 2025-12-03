@@ -127,3 +127,4 @@ Después de desplegar en Railway:
 - Ver `RAILWAY.md` para instrucciones de despliegue
 - Ver `VARIABLES_ENTORNO.md` para todas las variables de entorno
 
+

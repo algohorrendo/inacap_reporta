@@ -146,3 +146,4 @@ DB_PORT=3306
 
 **Importante:** Agrega `.env` a tu `.gitignore` para no subir información sensible al repositorio.
 
+

@@ -108,3 +108,4 @@ El Build Command actual tiene esto (ESTÁ MAL):
 
 ¡Eso es todo! No necesitas shell, todo se hace desde el dashboard web.
 
+

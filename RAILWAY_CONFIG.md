@@ -30,3 +30,4 @@ python manage.py migrate --noinput && python manage.py create_superuser_if_not_e
 
 Railway ya estará ejecutando los comandos dentro de la carpeta `inacap_reporta/`.
 
+

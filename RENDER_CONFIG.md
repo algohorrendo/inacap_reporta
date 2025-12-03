@@ -50,7 +50,7 @@ python manage.py migrate --noinput && python manage.py create_superuser_if_not_e
 
 ### Sin Root Directory:
 ```bash
-cd inacap_reporta && python manage.py migrate --noinput && python manage.py create_superuser_if_not_exists
+cd inacap_reporta 
 ```
 
 ---
@@ -110,4 +110,5 @@ Después del primer deploy:
 2. Revisa los logs del Release Command para confirmar migraciones
 3. Revisa que el superusuario se haya creado
 4. Accede a `/admin/` con las credenciales por defecto
+
 
