@@ -2,9 +2,10 @@ services:
   - type: web
     name: inacap-reporta
     runtime: python
+    plan: free
     buildCommand: cd inacap_reporta && pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: cd inacap_reporta && gunicorn inacap_reporta.wsgi
+    releaseCommand: cd inacap_reporta && python manage.py migrate --noinput && python manage.py create_superuser_if_not_exists
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
-
