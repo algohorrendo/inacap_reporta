@@ -228,11 +228,45 @@
         <div class="stats-panel">
             <div class="stat-card">
                 <h3>Total Incidencias</h3>
-                <p class="stat-number">{{ incidencias.count }}</p>
+                <p class="stat-number" id="total-incidencias">{{ incidencias.count }}</p>
             </div>
             <div class="stat-card">
                 <h3>Pendientes</h3>
-                <p class="stat-number">{{ pendientes }}</p>
+                <p class="stat-number" id="pendientes">{{ pendientes }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Resueltas</h3>
+                <p class="stat-number" id="resueltas">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Tiempo Promedio Resolución</h3>
+                <p class="stat-number" id="tiempo-promedio">-</p>
+                <small style="color:#666;">días</small>
+            </div>
+        </div>
+        
+        <!-- Dashboard con Gráficos -->
+        <div class="dashboard-panel" style="background: white; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 25px; margin-bottom: 25px;">
+            <h2 style="background: linear-gradient(45deg,#667eea,#764ba2); color: white; padding: 20px 25px; margin: -25px -25px 25px -25px; font-size: 22px; font-weight: bold;">
+                📊 Dashboard de Estadísticas
+            </h2>
+            <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
+                <div class="chart-container" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; color: #333;">📅 Incidencias por Mes</h3>
+                    <canvas id="chartMeses" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="chart-container" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; color: #333;">📂 Incidencias por Categoría</h3>
+                    <canvas id="chartCategorias" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="chart-container" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; color: #333;">🔄 Incidencias por Estado</h3>
+                    <canvas id="chartEstados" style="max-height: 300px;"></canvas>
+                </div>
+                <div class="chart-container" style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; color: #333;">⚠️ Incidencias por Urgencia</h3>
+                    <canvas id="chartUrgencias" style="max-height: 300px;"></canvas>
+                </div>
             </div>
         </div>
         <div class="incidencias-panel">
@@ -295,5 +329,215 @@
             {% endif %}
         </div>
     </div>
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <script>
+        // Configuración de colores
+        const colors = {
+            primary: '#667eea',
+            secondary: '#764ba2',
+            success: '#28a745',
+            warning: '#ffc107',
+            danger: '#dc3545',
+            info: '#17a2b8',
+            gradient: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe']
+        };
+        
+        // Función para obtener CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Obtener datos del API
+        async function loadDashboardData() {
+            try {
+                const csrftoken = getCookie('csrftoken');
+                const response = await fetch('/api/dashboard-stats/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'  // Incluir cookies de sesión
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al cargar datos');
+                }
+                
+                const data = await response.json();
+                
+                // Actualizar estadísticas
+                document.getElementById('total-incidencias').textContent = data.total_incidencias;
+                document.getElementById('pendientes').textContent = data.incidencias_pendientes;
+                document.getElementById('resueltas').textContent = data.incidencias_resueltas;
+                document.getElementById('tiempo-promedio').textContent = data.tiempo_promedio_resolucion || 0;
+                
+                // Crear gráficos
+                createChartMeses(data.incidencias_por_mes);
+                createChartCategorias(data.incidencias_por_categoria);
+                createChartEstados(data.incidencias_por_estado);
+                createChartUrgencias(data.incidencias_por_urgencia);
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Gráfico de Incidencias por Mes
+        function createChartMeses(data) {
+            const ctx = document.getElementById('chartMeses').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.meses,
+                    datasets: [{
+                        label: 'Incidencias',
+                        data: data.totales,
+                        borderColor: colors.primary,
+                        backgroundColor: colors.primary + '20',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Gráfico de Incidencias por Categoría
+        function createChartCategorias(data) {
+            const ctx = document.getElementById('chartCategorias').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.categorias,
+                    datasets: [{
+                        data: data.totales,
+                        backgroundColor: colors.gradient,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Gráfico de Incidencias por Estado
+        function createChartEstados(data) {
+            const ctx = document.getElementById('chartEstados').getContext('2d');
+            const estadoColors = {
+                'pendiente': colors.warning,
+                'progreso': colors.info,
+                'resuelto': colors.success,
+                'cerrado': colors.danger
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.estados.map(e => e.charAt(0).toUpperCase() + e.slice(1)),
+                    datasets: [{
+                        label: 'Incidencias',
+                        data: data.totales,
+                        backgroundColor: data.estados.map(e => estadoColors[e] || colors.primary),
+                        borderColor: data.estados.map(e => estadoColors[e] || colors.primary),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Gráfico de Incidencias por Urgencia
+        function createChartUrgencias(data) {
+            const ctx = document.getElementById('chartUrgencias').getContext('2d');
+            const urgenciaColors = {
+                'baja': colors.success,
+                'media': colors.warning,
+                'alta': colors.danger,
+                'critica': '#8b0000'
+            };
+            
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: data.urgencias.map(u => u.charAt(0).toUpperCase() + u.slice(1)),
+                    datasets: [{
+                        data: data.totales,
+                        backgroundColor: data.urgencias.map(u => urgenciaColors[u] || colors.primary),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Cargar datos al cargar la página
+        document.addEventListener('DOMContentLoaded', loadDashboardData);
+    </script>
 </body>
 </html>

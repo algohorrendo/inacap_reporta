@@ -22,6 +22,7 @@ urlpatterns = [
     path('incidencia/eliminar/<int:id>/', views.eliminar_incidencia_view, name='eliminar_incidencia'),
     path('incidencia/cambiar_estado/<int:id>/', views.cambiar_estado_view, name='cambiar_estado_incidencia'),
     path('api/', include(router.urls)),
+    path('api/dashboard-stats/', api_views.dashboard_stats, name='dashboard_stats'),
     path('api-dashboard/', views.api_dashboard_view, name='api_dashboard'),
     # ==================== RUTAS DE PERFIL ====================
     path('perfil/', views.perfil, name='perfil'),
