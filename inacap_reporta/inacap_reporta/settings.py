@@ -12,6 +12,10 @@ from pathlib import Path
 import os
 import dj_database_url
 from dotenv import load_dotenv
+import pymysql
+
+# PyMySQL configuration for Django
+pymysql.install_as_MySQLdb()
 
 # Load environment variables from .env file
 load_dotenv()
@@ -115,6 +119,7 @@ else:
             'PORT': os.environ.get('DB_PORT', '3306'),
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+                'charset': 'utf8mb4',
             } if DB_ENGINE == 'django.db.backends.mysql' else {},
         }
     }
