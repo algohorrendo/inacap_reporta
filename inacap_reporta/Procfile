@@ -1,2 +1,3 @@
-web: gunicorn inacap_reporta.wsgi --log-file -
+release: cd inacap_reporta && python manage.py migrate --noinput && python manage.py create_superuser_if_not_exists
+web: cd inacap_reporta && gunicorn inacap_reporta.wsgi --log-file -
 
